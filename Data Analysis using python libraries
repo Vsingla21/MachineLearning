@@ -1,0 +1,1028 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "2795f3ff",
+   "metadata": {
+    "_cell_guid": "b1076dfc-b9ad-4769-8c92-a6c4dae69d19",
+    "_uuid": "8f2839f25d086af736a60e9eeb907d3b93b6e0e5",
+    "execution": {
+     "iopub.execute_input": "2024-07-11T15:40:40.307876Z",
+     "iopub.status.busy": "2024-07-11T15:40:40.307438Z",
+     "iopub.status.idle": "2024-07-11T15:40:40.325319Z",
+     "shell.execute_reply": "2024-07-11T15:40:40.324103Z"
+    },
+    "papermill": {
+     "duration": 0.027087,
+     "end_time": "2024-07-11T15:40:40.327865",
+     "exception": false,
+     "start_time": "2024-07-11T15:40:40.300778",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "['Building_Permits.csv', 'DataDictionaryBuildingPermit.xlsx']\n"
+     ]
+    }
+   ],
+   "source": [
+    "import os\n",
+    "print(os.listdir('../input/building-permit-applications-data'))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "ddd4993c",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-11T15:40:40.339917Z",
+     "iopub.status.busy": "2024-07-11T15:40:40.339528Z",
+     "iopub.status.idle": "2024-07-11T15:40:43.928040Z",
+     "shell.execute_reply": "2024-07-11T15:40:43.926883Z"
+    },
+    "papermill": {
+     "duration": 3.596717,
+     "end_time": "2024-07-11T15:40:43.930372",
+     "exception": false,
+     "start_time": "2024-07-11T15:40:40.333655",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/tmp/ipykernel_18/847690978.py:2: DtypeWarning: Columns (22,32) have mixed types. Specify dtype option on import or set low_memory=False.\n",
+      "  df = pd.read_csv('../input/building-permit-applications-data/Building_Permits.csv')\n"
+     ]
+    }
+   ],
+   "source": [
+    "import pandas as pd\n",
+    "df = pd.read_csv('../input/building-permit-applications-data/Building_Permits.csv')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "50ded651",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-11T15:40:43.941370Z",
+     "iopub.status.busy": "2024-07-11T15:40:43.941006Z",
+     "iopub.status.idle": "2024-07-11T15:40:43.968795Z",
+     "shell.execute_reply": "2024-07-11T15:40:43.967702Z"
+    },
+    "papermill": {
+     "duration": 0.036487,
+     "end_time": "2024-07-11T15:40:43.971576",
+     "exception": false,
+     "start_time": "2024-07-11T15:40:43.935089",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "First few rows of the dataset: \n",
+      "  Permit Number  Permit Type            Permit Type Definition  \\\n",
+      "0  201505065519            4                      sign - erect   \n",
+      "1  201604195146            4                      sign - erect   \n",
+      "2  201605278609            3  additions alterations or repairs   \n",
+      "3  201611072166            8            otc alterations permit   \n",
+      "4  201611283529            6                       demolitions   \n",
+      "\n",
+      "  Permit Creation Date Block  Lot  Street Number Street Number Suffix  \\\n",
+      "0           05/06/2015  0326  023            140                  NaN   \n",
+      "1           04/19/2016  0306  007            440                  NaN   \n",
+      "2           05/27/2016  0595  203           1647                  NaN   \n",
+      "3           11/07/2016  0156  011           1230                  NaN   \n",
+      "4           11/28/2016  0342  001            950                  NaN   \n",
+      "\n",
+      "  Street Name Street Suffix  ...  Existing Construction Type  \\\n",
+      "0       Ellis            St  ...                         3.0   \n",
+      "1       Geary            St  ...                         3.0   \n",
+      "2     Pacific            Av  ...                         1.0   \n",
+      "3     Pacific            Av  ...                         5.0   \n",
+      "4      Market            St  ...                         3.0   \n",
+      "\n",
+      "  Existing Construction Type Description Proposed Construction Type  \\\n",
+      "0                          constr type 3                        NaN   \n",
+      "1                          constr type 3                        NaN   \n",
+      "2                          constr type 1                        1.0   \n",
+      "3                         wood frame (5)                        5.0   \n",
+      "4                          constr type 3                        NaN   \n",
+      "\n",
+      "  Proposed Construction Type Description Site Permit Supervisor District  \\\n",
+      "0                                    NaN         NaN                 3.0   \n",
+      "1                                    NaN         NaN                 3.0   \n",
+      "2                          constr type 1         NaN                 3.0   \n",
+      "3                         wood frame (5)         NaN                 3.0   \n",
+      "4                                    NaN         NaN                 6.0   \n",
+      "\n",
+      "  Neighborhoods - Analysis Boundaries  Zipcode  \\\n",
+      "0                          Tenderloin  94102.0   \n",
+      "1                          Tenderloin  94102.0   \n",
+      "2                        Russian Hill  94109.0   \n",
+      "3                            Nob Hill  94109.0   \n",
+      "4                          Tenderloin  94102.0   \n",
+      "\n",
+      "                                    Location      Record ID  \n",
+      "0  (37.785719256680785, -122.40852313194863)  1380611233945  \n",
+      "1   (37.78733980600732, -122.41063199757738)  1420164406718  \n",
+      "2    (37.7946573324287, -122.42232562979227)  1424856504716  \n",
+      "3   (37.79595867909168, -122.41557405519474)  1443574295566  \n",
+      "4   (37.78315261897309, -122.40950883997789)   144548169992  \n",
+      "\n",
+      "[5 rows x 43 columns]\n"
+     ]
+    }
+   ],
+   "source": [
+    "print('First few rows of the dataset: ')\n",
+    "print(df.head())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "be963fa8",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-11T15:40:43.983701Z",
+     "iopub.status.busy": "2024-07-11T15:40:43.982656Z",
+     "iopub.status.idle": "2024-07-11T15:40:44.187008Z",
+     "shell.execute_reply": "2024-07-11T15:40:44.185988Z"
+    },
+    "papermill": {
+     "duration": 0.213232,
+     "end_time": "2024-07-11T15:40:44.189762",
+     "exception": false,
+     "start_time": "2024-07-11T15:40:43.976530",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Summary statistics: \n",
+      "         Permit Type  Street Number          Unit  Number of Existing Stories  \\\n",
+      "count  198900.000000  198900.000000  29479.000000               156116.000000   \n",
+      "mean        7.522323    1121.728944     78.517182                    5.705773   \n",
+      "std         1.457451    1135.768948    326.981324                    8.613455   \n",
+      "min         1.000000       0.000000      0.000000                    0.000000   \n",
+      "25%         8.000000     235.000000      0.000000                    2.000000   \n",
+      "50%         8.000000     710.000000      0.000000                    3.000000   \n",
+      "75%         8.000000    1700.000000      1.000000                    4.000000   \n",
+      "max         8.000000    8400.000000   6004.000000                   78.000000   \n",
+      "\n",
+      "       Number of Proposed Stories  Estimated Cost  Revised Cost  \\\n",
+      "count               156032.000000    1.608340e+05  1.928340e+05   \n",
+      "mean                     5.745043    1.689554e+05  1.328562e+05   \n",
+      "std                      8.613284    3.630386e+06  3.584903e+06   \n",
+      "min                      0.000000    1.000000e+00  0.000000e+00   \n",
+      "25%                      2.000000    3.300000e+03  1.000000e+00   \n",
+      "50%                      3.000000    1.100000e+04  7.000000e+03   \n",
+      "75%                      4.000000    3.500000e+04  2.870750e+04   \n",
+      "max                     78.000000    5.379586e+08  7.805000e+08   \n",
+      "\n",
+      "       Existing Units  Proposed Units       Plansets  \\\n",
+      "count   147362.000000   147989.000000  161591.000000   \n",
+      "mean        15.666164       16.510950       1.274650   \n",
+      "std         74.476321       75.220444      22.407345   \n",
+      "min          0.000000        0.000000       0.000000   \n",
+      "25%          1.000000        1.000000       0.000000   \n",
+      "50%          1.000000        2.000000       2.000000   \n",
+      "75%          4.000000        4.000000       2.000000   \n",
+      "max       1907.000000     1911.000000    9000.000000   \n",
+      "\n",
+      "       Existing Construction Type  Proposed Construction Type  \\\n",
+      "count               155534.000000               155738.000000   \n",
+      "mean                     4.072878                    4.089529   \n",
+      "std                      1.585756                    1.578766   \n",
+      "min                      1.000000                    1.000000   \n",
+      "25%                      3.000000                    3.000000   \n",
+      "50%                      5.000000                    5.000000   \n",
+      "75%                      5.000000                    5.000000   \n",
+      "max                      5.000000                    5.000000   \n",
+      "\n",
+      "       Supervisor District        Zipcode     Record ID  \n",
+      "count        197183.000000  197184.000000  1.989000e+05  \n",
+      "mean              5.538403   94115.500558  1.162048e+12  \n",
+      "std               2.887041       9.270131  4.918215e+11  \n",
+      "min               1.000000   94102.000000  1.293532e+10  \n",
+      "25%               3.000000   94109.000000  1.308567e+12  \n",
+      "50%               6.000000   94114.000000  1.371840e+12  \n",
+      "75%               8.000000   94122.000000  1.435000e+12  \n",
+      "max              11.000000   94158.000000  1.498342e+12  \n"
+     ]
+    }
+   ],
+   "source": [
+    "print(\"Summary statistics: \")\n",
+    "print(df.describe())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "96b2b79a",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-11T15:40:44.201734Z",
+     "iopub.status.busy": "2024-07-11T15:40:44.201323Z",
+     "iopub.status.idle": "2024-07-11T15:40:44.457822Z",
+     "shell.execute_reply": "2024-07-11T15:40:44.456762Z"
+    },
+    "papermill": {
+     "duration": 0.265707,
+     "end_time": "2024-07-11T15:40:44.460593",
+     "exception": false,
+     "start_time": "2024-07-11T15:40:44.194886",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Dataset Information: \n",
+      "<class 'pandas.core.frame.DataFrame'>\n",
+      "RangeIndex: 198900 entries, 0 to 198899\n",
+      "Data columns (total 43 columns):\n",
+      " #   Column                                  Non-Null Count   Dtype  \n",
+      "---  ------                                  --------------   -----  \n",
+      " 0   Permit Number                           198900 non-null  object \n",
+      " 1   Permit Type                             198900 non-null  int64  \n",
+      " 2   Permit Type Definition                  198900 non-null  object \n",
+      " 3   Permit Creation Date                    198900 non-null  object \n",
+      " 4   Block                                   198900 non-null  object \n",
+      " 5   Lot                                     198900 non-null  object \n",
+      " 6   Street Number                           198900 non-null  int64  \n",
+      " 7   Street Number Suffix                    2216 non-null    object \n",
+      " 8   Street Name                             198900 non-null  object \n",
+      " 9   Street Suffix                           196132 non-null  object \n",
+      " 10  Unit                                    29479 non-null   float64\n",
+      " 11  Unit Suffix                             1961 non-null    object \n",
+      " 12  Description                             198610 non-null  object \n",
+      " 13  Current Status                          198900 non-null  object \n",
+      " 14  Current Status Date                     198900 non-null  object \n",
+      " 15  Filed Date                              198900 non-null  object \n",
+      " 16  Issued Date                             183960 non-null  object \n",
+      " 17  Completed Date                          97191 non-null   object \n",
+      " 18  First Construction Document Date        183954 non-null  object \n",
+      " 19  Structural Notification                 6922 non-null    object \n",
+      " 20  Number of Existing Stories              156116 non-null  float64\n",
+      " 21  Number of Proposed Stories              156032 non-null  float64\n",
+      " 22  Voluntary Soft-Story Retrofit           35 non-null      object \n",
+      " 23  Fire Only Permit                        18827 non-null   object \n",
+      " 24  Permit Expiration Date                  147020 non-null  object \n",
+      " 25  Estimated Cost                          160834 non-null  float64\n",
+      " 26  Revised Cost                            192834 non-null  float64\n",
+      " 27  Existing Use                            157786 non-null  object \n",
+      " 28  Existing Units                          147362 non-null  float64\n",
+      " 29  Proposed Use                            156461 non-null  object \n",
+      " 30  Proposed Units                          147989 non-null  float64\n",
+      " 31  Plansets                                161591 non-null  float64\n",
+      " 32  TIDF Compliance                         2 non-null       object \n",
+      " 33  Existing Construction Type              155534 non-null  float64\n",
+      " 34  Existing Construction Type Description  155534 non-null  object \n",
+      " 35  Proposed Construction Type              155738 non-null  float64\n",
+      " 36  Proposed Construction Type Description  155738 non-null  object \n",
+      " 37  Site Permit                             5359 non-null    object \n",
+      " 38  Supervisor District                     197183 non-null  float64\n",
+      " 39  Neighborhoods - Analysis Boundaries     197175 non-null  object \n",
+      " 40  Zipcode                                 197184 non-null  float64\n",
+      " 41  Location                                197200 non-null  object \n",
+      " 42  Record ID                               198900 non-null  int64  \n",
+      "dtypes: float64(12), int64(3), object(28)\n",
+      "memory usage: 65.3+ MB\n",
+      "None\n"
+     ]
+    }
+   ],
+   "source": [
+    "print('Dataset Information: ')\n",
+    "print(df.info())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "8eb83f5c",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-11T15:40:44.473037Z",
+     "iopub.status.busy": "2024-07-11T15:40:44.472287Z",
+     "iopub.status.idle": "2024-07-11T15:40:44.656295Z",
+     "shell.execute_reply": "2024-07-11T15:40:44.655167Z"
+    },
+    "papermill": {
+     "duration": 0.193247,
+     "end_time": "2024-07-11T15:40:44.659216",
+     "exception": false,
+     "start_time": "2024-07-11T15:40:44.465969",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Removing rows with missing 'Estimated Cost' and 'Revised Cost' values.\n",
+      "Rows before cleaning (dropping) in Estimated Cost: 198900\n",
+      "Rows after cleaning (dropping) in Estimated Cost: 160834\n",
+      "Rows before cleaning (dropping) in Revised Cost: 198900\n",
+      "Rows after cleaning (dropping) in Revised Cost: 192834\n",
+      "Removing rows which do not have site permit\n",
+      "Rows after dropping: 5359\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(\"Removing rows with missing 'Estimated Cost' and 'Revised Cost' values.\")\n",
+    "rows_before = df.shape[0]\n",
+    "print(f\"Rows before cleaning (dropping) in Estimated Cost: {rows_before}\")\n",
+    "df_cleaned = df.dropna(subset=['Estimated Cost'])\n",
+    "rows_after = df_cleaned.shape[0]\n",
+    "print(f\"Rows after cleaning (dropping) in Estimated Cost: {rows_after}\")\n",
+    "\n",
+    "rows_before1 = df.shape[0]\n",
+    "print(f\"Rows before cleaning (dropping) in Revised Cost: {rows_before1}\")\n",
+    "df_cleaned1 = df.dropna(subset=['Revised Cost'])\n",
+    "rows_after1 = df_cleaned1.shape[0]\n",
+    "print(f\"Rows after cleaning (dropping) in Revised Cost: {rows_after1}\")\n",
+    "\n",
+    "print('Removing rows which do not have site permit')\n",
+    "df_cleaned3 = df.dropna(subset=['Site Permit'])\n",
+    "rows_after_site = df_cleaned3.shape[0]\n",
+    "print(f\"Rows after dropping: {rows_after_site}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "b6295816",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-11T15:40:44.671845Z",
+     "iopub.status.busy": "2024-07-11T15:40:44.671418Z",
+     "iopub.status.idle": "2024-07-11T15:40:45.025555Z",
+     "shell.execute_reply": "2024-07-11T15:40:45.024271Z"
+    },
+    "papermill": {
+     "duration": 0.363796,
+     "end_time": "2024-07-11T15:40:45.028559",
+     "exception": false,
+     "start_time": "2024-07-11T15:40:44.664763",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Rows with zeto values before filling:\n",
+      "       Permit Number  Permit Type            Permit Type Definition  \\\n",
+      "0       201505065519            4                      sign - erect   \n",
+      "1       201604195146            4                      sign - erect   \n",
+      "2       201605278609            3  additions alterations or repairs   \n",
+      "3       201611072166            8            otc alterations permit   \n",
+      "4       201611283529            6                       demolitions   \n",
+      "...              ...          ...                               ...   \n",
+      "198891  201711274844            8            otc alterations permit   \n",
+      "198892  201712045380            8            otc alterations permit   \n",
+      "198893  201712055472            8            otc alterations permit   \n",
+      "198894  201712055493            8            otc alterations permit   \n",
+      "198896  201712055595            8            otc alterations permit   \n",
+      "\n",
+      "       Permit Creation Date Block  Lot  Street Number Street Number Suffix  \\\n",
+      "0                05/06/2015  0326  023            140                  NaN   \n",
+      "1                04/19/2016  0306  007            440                  NaN   \n",
+      "2                05/27/2016  0595  203           1647                  NaN   \n",
+      "3                11/07/2016  0156  011           1230                  NaN   \n",
+      "4                11/28/2016  0342  001            950                  NaN   \n",
+      "...                     ...   ...  ...            ...                  ...   \n",
+      "198891           11/27/2017  0766  008            590                  NaN   \n",
+      "198892           12/04/2017  1180  021           1543                  NaN   \n",
+      "198893           12/05/2017  1000  014           3018                  NaN   \n",
+      "198894           12/05/2017  3522  006            340                  NaN   \n",
+      "198896           12/05/2017  0271  014            580                  NaN   \n",
+      "\n",
+      "       Street Name Street Suffix  ...  Existing Construction Type  \\\n",
+      "0            Ellis            St  ...                         3.0   \n",
+      "1            Geary            St  ...                         3.0   \n",
+      "2          Pacific            Av  ...                         1.0   \n",
+      "3          Pacific            Av  ...                         5.0   \n",
+      "4           Market            St  ...                         3.0   \n",
+      "...            ...           ...  ...                         ...   \n",
+      "198891    Van Ness            Av  ...                         3.0   \n",
+      "198892  Mcallister            St  ...                         5.0   \n",
+      "198893        Clay            St  ...                         5.0   \n",
+      "198894        12th            St  ...                         5.0   \n",
+      "198896        Bush            St  ...                         5.0   \n",
+      "\n",
+      "       Existing Construction Type Description Proposed Construction Type  \\\n",
+      "0                               constr type 3                        NaN   \n",
+      "1                               constr type 3                        NaN   \n",
+      "2                               constr type 1                        1.0   \n",
+      "3                              wood frame (5)                        5.0   \n",
+      "4                               constr type 3                        NaN   \n",
+      "...                                       ...                        ...   \n",
+      "198891                          constr type 3                        3.0   \n",
+      "198892                         wood frame (5)                        5.0   \n",
+      "198893                         wood frame (5)                        5.0   \n",
+      "198894                         wood frame (5)                        5.0   \n",
+      "198896                         wood frame (5)                        5.0   \n",
+      "\n",
+      "       Proposed Construction Type Description Site Permit Supervisor District  \\\n",
+      "0                                         NaN         NaN                 3.0   \n",
+      "1                                         NaN         NaN                 3.0   \n",
+      "2                               constr type 1         NaN                 3.0   \n",
+      "3                              wood frame (5)         NaN                 3.0   \n",
+      "4                                         NaN         NaN                 6.0   \n",
+      "...                                       ...         ...                 ...   \n",
+      "198891                          constr type 3         NaN                 NaN   \n",
+      "198892                         wood frame (5)         NaN                 NaN   \n",
+      "198893                         wood frame (5)         NaN                 NaN   \n",
+      "198894                         wood frame (5)         NaN                 NaN   \n",
+      "198896                         wood frame (5)         NaN                 NaN   \n",
+      "\n",
+      "       Neighborhoods - Analysis Boundaries  Zipcode  \\\n",
+      "0                               Tenderloin  94102.0   \n",
+      "1                               Tenderloin  94102.0   \n",
+      "2                             Russian Hill  94109.0   \n",
+      "3                                 Nob Hill  94109.0   \n",
+      "4                               Tenderloin  94102.0   \n",
+      "...                                    ...      ...   \n",
+      "198891                                 NaN      NaN   \n",
+      "198892                                 NaN      NaN   \n",
+      "198893                                 NaN      NaN   \n",
+      "198894                                 NaN      NaN   \n",
+      "198896                                 NaN      NaN   \n",
+      "\n",
+      "                                         Location      Record ID  \n",
+      "0       (37.785719256680785, -122.40852313194863)  1380611233945  \n",
+      "1        (37.78733980600732, -122.41063199757738)  1420164406718  \n",
+      "2         (37.7946573324287, -122.42232562979227)  1424856504716  \n",
+      "3        (37.79595867909168, -122.41557405519474)  1443574295566  \n",
+      "4        (37.78315261897309, -122.40950883997789)   144548169992  \n",
+      "...                                           ...            ...  \n",
+      "198891                                        NaN   148838081446  \n",
+      "198892                                        NaN   148916691540  \n",
+      "198893                                        NaN  1489281258414  \n",
+      "198894                                        NaN  1489308256860  \n",
+      "198896                                        NaN  1489462354993  \n",
+      "\n",
+      "[160834 rows x 43 columns]\n"
+     ]
+    }
+   ],
+   "source": [
+    "print('Rows with zeto values before filling:')\n",
+    "print(df_cleaned[df_cleaned.isnull().any(axis=1)])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "cae18606",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-11T15:40:45.041797Z",
+     "iopub.status.busy": "2024-07-11T15:40:45.041385Z",
+     "iopub.status.idle": "2024-07-11T15:40:45.696818Z",
+     "shell.execute_reply": "2024-07-11T15:40:45.695759Z"
+    },
+    "papermill": {
+     "duration": 0.664897,
+     "end_time": "2024-07-11T15:40:45.699259",
+     "exception": false,
+     "start_time": "2024-07-11T15:40:45.034362",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Filling missing values with 0\n",
+      "Empty DataFrame\n",
+      "Columns: [Permit Number, Permit Type, Permit Type Definition, Permit Creation Date, Block, Lot, Street Number, Street Number Suffix, Street Name, Street Suffix, Unit, Unit Suffix, Description, Current Status, Current Status Date, Filed Date, Issued Date, Completed Date, First Construction Document Date, Structural Notification, Number of Existing Stories, Number of Proposed Stories, Voluntary Soft-Story Retrofit, Fire Only Permit, Permit Expiration Date, Estimated Cost, Revised Cost, Existing Use, Existing Units, Proposed Use, Proposed Units, Plansets, TIDF Compliance, Existing Construction Type, Existing Construction Type Description, Proposed Construction Type, Proposed Construction Type Description, Site Permit, Supervisor District, Neighborhoods - Analysis Boundaries, Zipcode, Location, Record ID]\n",
+      "Index: []\n",
+      "\n",
+      "[0 rows x 43 columns]\n"
+     ]
+    }
+   ],
+   "source": [
+    "print('Filling missing values with 0')\n",
+    "df_filled = df_cleaned.fillna(0)\n",
+    "print(df_filled[df_filled.isnull().any(axis=1)])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "8628aee5",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-11T15:40:45.713554Z",
+     "iopub.status.busy": "2024-07-11T15:40:45.712591Z",
+     "iopub.status.idle": "2024-07-11T15:40:45.735516Z",
+     "shell.execute_reply": "2024-07-11T15:40:45.734435Z"
+    },
+    "papermill": {
+     "duration": 0.032909,
+     "end_time": "2024-07-11T15:40:45.738106",
+     "exception": false,
+     "start_time": "2024-07-11T15:40:45.705197",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Rows before filtering: 160834\n",
+      "Rows after filtering: 15142\n"
+     ]
+    }
+   ],
+   "source": [
+    "threshold_value = 15\n",
+    "df_filtered = df_filled[df_filled['Number of Existing Stories']>= threshold_value]\n",
+    "rows_before = df_filled.shape[0]\n",
+    "rows_after = df_filtered.shape[0]\n",
+    "\n",
+    "print(f\"Rows before filtering: {rows_before}\")\n",
+    "print(f\"Rows after filtering: {rows_after}\")\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "id": "4954279f",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-11T15:40:45.751465Z",
+     "iopub.status.busy": "2024-07-11T15:40:45.751100Z",
+     "iopub.status.idle": "2024-07-11T15:40:45.766981Z",
+     "shell.execute_reply": "2024-07-11T15:40:45.765843Z"
+    },
+    "papermill": {
+     "duration": 0.027992,
+     "end_time": "2024-07-11T15:40:45.772046",
+     "exception": false,
+     "start_time": "2024-07-11T15:40:45.744054",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "    Permit Number  Permit Type  Permit Type Definition Permit Creation Date  \\\n",
+      "115  201702109136            4            sign - erect           02/10/2017   \n",
+      "123  201704275068            8  otc alterations permit           04/27/2017   \n",
+      "132  201706018107            8  otc alterations permit           06/01/2017   \n",
+      "135  201706078648            8  otc alterations permit           06/07/2017   \n",
+      "142  201706270487            8  otc alterations permit           06/27/2017   \n",
+      "\n",
+      "    Block  Lot  Street Number Street Number Suffix     Street Name  \\\n",
+      "115  3707  016             90                    0  New Montgomery   \n",
+      "123  3738  011            301                    0          Howard   \n",
+      "132  3708  028             71                    0       Stevenson   \n",
+      "135  0295  008            450                    0          Powell   \n",
+      "142  0297  028            515                    0           Mason   \n",
+      "\n",
+      "    Street Suffix  ...  Existing Construction Type  \\\n",
+      "115            St  ...                         1.0   \n",
+      "123            St  ...                         1.0   \n",
+      "132            St  ...                         1.0   \n",
+      "135            St  ...                         2.0   \n",
+      "142            St  ...                         1.0   \n",
+      "\n",
+      "    Existing Construction Type Description Proposed Construction Type  \\\n",
+      "115                          constr type 1                        0.0   \n",
+      "123                          constr type 1                        1.0   \n",
+      "132                          constr type 1                        1.0   \n",
+      "135                          constr type 2                        2.0   \n",
+      "142                          constr type 1                        1.0   \n",
+      "\n",
+      "    Proposed Construction Type Description Site Permit Supervisor District  \\\n",
+      "115                                      0           0                 6.0   \n",
+      "123                          constr type 1           0                 6.0   \n",
+      "132                          constr type 1           0                 6.0   \n",
+      "135                          constr type 2           0                 3.0   \n",
+      "142                          constr type 1           0                 3.0   \n",
+      "\n",
+      "    Neighborhoods - Analysis Boundaries  Zipcode  \\\n",
+      "115      Financial District/South Beach  94105.0   \n",
+      "123      Financial District/South Beach  94105.0   \n",
+      "132      Financial District/South Beach  94105.0   \n",
+      "135      Financial District/South Beach  94108.0   \n",
+      "142                            Nob Hill  94102.0   \n",
+      "\n",
+      "                                     Location      Record ID  \n",
+      "115  (37.78742256247351, -122.40093229776461)  1452944164483  \n",
+      "123  (37.78951790121917, -122.39426523763933)  1461057165667  \n",
+      "132   (37.7893842722688, -122.39965909072765)  1465205164522  \n",
+      "135   (37.7889844563134, -122.40822615293433)  1465981233628  \n",
+      "142  (37.78831830234988, -122.41054888775284)  1468527493134  \n",
+      "\n",
+      "[5 rows x 43 columns]\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(df_filtered.head())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "id": "ddafac9c",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-11T15:40:45.789880Z",
+     "iopub.status.busy": "2024-07-11T15:40:45.789233Z",
+     "iopub.status.idle": "2024-07-11T15:40:45.806976Z",
+     "shell.execute_reply": "2024-07-11T15:40:45.805891Z"
+    },
+    "papermill": {
+     "duration": 0.030275,
+     "end_time": "2024-07-11T15:40:45.809589",
+     "exception": false,
+     "start_time": "2024-07-11T15:40:45.779314",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "       Permit Number  Permit Type  Permit Type Definition  \\\n",
+      "198839  201802232145            8  otc alterations permit   \n",
+      "198845  201802232149            8  otc alterations permit   \n",
+      "198849  201802232153            8  otc alterations permit   \n",
+      "198856  201802232157            8  otc alterations permit   \n",
+      "198857  201802232158            8  otc alterations permit   \n",
+      "\n",
+      "       Permit Creation Date  Block  Lot  Street Number Street Number Suffix  \\\n",
+      "198839           02/23/2018   0311  015              1                    0   \n",
+      "198845           02/23/2018  0215C  033           1333                    0   \n",
+      "198849           02/23/2018   0291  012             44                    0   \n",
+      "198856           02/23/2018   0259  026            555                    0   \n",
+      "198857           02/23/2018   3717  021            150                    0   \n",
+      "\n",
+      "       Street Name Street Suffix  ...  Existing Construction Type  \\\n",
+      "198839        Post            St  ...                         1.0   \n",
+      "198845       Jones            St  ...                         1.0   \n",
+      "198849  Montgomery            St  ...                         1.0   \n",
+      "198856  California            St  ...                         1.0   \n",
+      "198857       Spear            St  ...                         1.0   \n",
+      "\n",
+      "       Existing Construction Type Description Proposed Construction Type  \\\n",
+      "198839                          constr type 1                        1.0   \n",
+      "198845                          constr type 1                        1.0   \n",
+      "198849                          constr type 1                        1.0   \n",
+      "198856                          constr type 1                        1.0   \n",
+      "198857                          constr type 1                        1.0   \n",
+      "\n",
+      "       Proposed Construction Type Description Site Permit Supervisor District  \\\n",
+      "198839                          constr type 1           0                 3.0   \n",
+      "198845                          constr type 1           0                 3.0   \n",
+      "198849                          constr type 1           0                 3.0   \n",
+      "198856                          constr type 1           0                 3.0   \n",
+      "198857                          constr type 1           0                 6.0   \n",
+      "\n",
+      "       Neighborhoods - Analysis Boundaries  Zipcode  \\\n",
+      "198839      Financial District/South Beach  94104.0   \n",
+      "198845                            Nob Hill  94109.0   \n",
+      "198849      Financial District/South Beach  94104.0   \n",
+      "198856      Financial District/South Beach  94104.0   \n",
+      "198857      Financial District/South Beach  94105.0   \n",
+      "\n",
+      "                                        Location      Record ID  \n",
+      "198839  (37.78873939880986, -122.40250914685684)  1498295305172  \n",
+      "198845  (37.79362102799777, -122.41488237355445)  1498301434578  \n",
+      "198849  (37.78977799888473, -122.40173648131338)   149830567101  \n",
+      "198856   (37.79226164705184, -122.4034859571375)  1498312298587  \n",
+      "198857   (37.7917533906292, -122.39361386014191)  1498313164642  \n",
+      "\n",
+      "[5 rows x 43 columns]\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(df_filtered.tail())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "id": "da935f7a",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-11T15:40:45.827447Z",
+     "iopub.status.busy": "2024-07-11T15:40:45.826518Z",
+     "iopub.status.idle": "2024-07-11T15:40:45.831702Z",
+     "shell.execute_reply": "2024-07-11T15:40:45.830613Z"
+    },
+    "papermill": {
+     "duration": 0.016708,
+     "end_time": "2024-07-11T15:40:45.833915",
+     "exception": false,
+     "start_time": "2024-07-11T15:40:45.817207",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "import numpy as np"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "id": "c71457c3",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-11T15:40:45.847848Z",
+     "iopub.status.busy": "2024-07-11T15:40:45.847445Z",
+     "iopub.status.idle": "2024-07-11T15:40:45.853918Z",
+     "shell.execute_reply": "2024-07-11T15:40:45.852755Z"
+    },
+    "papermill": {
+     "duration": 0.016229,
+     "end_time": "2024-07-11T15:40:45.856332",
+     "exception": false,
+     "start_time": "2024-07-11T15:40:45.840103",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "estimated_cost = df_filtered['Estimated Cost'].to_numpy()\n",
+    "revised_cost = df_filtered['Revised Cost'].to_numpy()\n",
+    "existing_units = df_filtered['Existing Units'].to_numpy()\n",
+    "proposed_units = df_filtered['Proposed Units'].to_numpy()\n",
+    "existing_stories = df_filtered['Number of Existing Stories'].to_numpy()\n",
+    "proposed_stories = df_filtered['Number of Proposed Stories'].to_numpy()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "id": "2a197570",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-11T15:40:45.873838Z",
+     "iopub.status.busy": "2024-07-11T15:40:45.873427Z",
+     "iopub.status.idle": "2024-07-11T15:40:45.884133Z",
+     "shell.execute_reply": "2024-07-11T15:40:45.881707Z"
+    },
+    "papermill": {
+     "duration": 0.023651,
+     "end_time": "2024-07-11T15:40:45.886528",
+     "exception": false,
+     "start_time": "2024-07-11T15:40:45.862877",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "revised and estimated cost diff:  [      0.       0.       0. ...  -30000.   -8000. -585000.]\n",
+      "total units per permit:  [   75000.  2208000.  2300000. ...  1290000.   416000. 10530000.]\n",
+      "new number of total stories:  [ 15.  46.  46. ...  86. 104.  36.]\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Element wise subtraction\n",
+    "cost_diff = np.subtract(revised_cost, estimated_cost)\n",
+    "#element wise ultiplication\n",
+    "unit_prod = np.multiply(estimated_cost, existing_stories)\n",
+    "# Element wise addition\n",
+    "stories_sum = np.add(existing_stories, proposed_stories)\n",
+    "\n",
+    "print(\"revised and estimated cost diff: \",cost_diff)\n",
+    "print(\"total units per permit: \", unit_prod)\n",
+    "print(\"new number of total stories: \", stories_sum)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "id": "6692def9",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-11T15:40:45.904748Z",
+     "iopub.status.busy": "2024-07-11T15:40:45.903206Z",
+     "iopub.status.idle": "2024-07-11T15:40:45.913576Z",
+     "shell.execute_reply": "2024-07-11T15:40:45.911536Z"
+    },
+    "papermill": {
+     "duration": 0.023905,
+     "end_time": "2024-07-11T15:40:45.916999",
+     "exception": false,
+     "start_time": "2024-07-11T15:40:45.893094",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2. Top 5 tallest buildings:\n",
+      "[63. 63. 63. 63. 78.]\n"
+     ]
+    }
+   ],
+   "source": [
+    "sorted_stories = np.sort(existing_stories)\n",
+    "top_5_stories = sorted_stories[-5:]\n",
+    "bottom_5_stories = sorted_stories[:5]\n",
+    "print(\"2. Top 5 tallest buildings:\")\n",
+    "print(top_5_stories)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "id": "88bf2dd6",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-11T15:40:45.935643Z",
+     "iopub.status.busy": "2024-07-11T15:40:45.935148Z",
+     "iopub.status.idle": "2024-07-11T15:40:45.945102Z",
+     "shell.execute_reply": "2024-07-11T15:40:45.943923Z"
+    },
+    "papermill": {
+     "duration": 0.022816,
+     "end_time": "2024-07-11T15:40:45.947470",
+     "exception": false,
+     "start_time": "2024-07-11T15:40:45.924654",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Mean:  64.9276185444459\n",
+      "Median:  26.0\n"
+     ]
+    }
+   ],
+   "source": [
+    "mean_units = np.mean(existing_units)\n",
+    "median_units = np.median(existing_stories)\n",
+    "print(\"Mean: \", mean_units)\n",
+    "print(\"Median: \", median_units)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "id": "bbb0d322",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-11T15:40:45.961627Z",
+     "iopub.status.busy": "2024-07-11T15:40:45.961228Z",
+     "iopub.status.idle": "2024-07-11T15:40:46.409943Z",
+     "shell.execute_reply": "2024-07-11T15:40:46.408773Z"
+    },
+    "papermill": {
+     "duration": 0.458384,
+     "end_time": "2024-07-11T15:40:46.412263",
+     "exception": false,
+     "start_time": "2024-07-11T15:40:45.953879",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "image/png": "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zspg0qRJmDRpkq7DICIiokpE5zcEEBEREdH/YXFGREREpEdYnBERERHpERZnRERERHqExRkRERGRHmFxRkRERKRHWJwRERER6REWZ0RERER6hMUZERERkR5hcUZERESkR1icEREREekRFmdEREREeoTFGREREZEeYXFGREREpEdYnBERERHpERZnRERERHqExRkRERGRHmFxRkRERKRHWJxVUDdu3IAQwiBeCoUCAKBQKHQeC/NlzsyXOTPfypuzvmBxRkRERKRHWJwRERER6REWZ0RERER6hMUZERERkR5hcUZERESkR1icEREREekRFmdEREREeoTFGREREZEeYXFGREREpEdYnBERERHpERZnRERERHqExRkRERGRHmFxRkRERKRHWJxVULVr14YkSQbxsrW1BQDY2trqPBbmy5yZL3PWRb5kWFicEREREekRFmdEREREeoTFGREREZEeYXFGREREpEdYnBERERHpERZnRERERHqExRkRERGRHmFxRkRERKRHWJwRERER6REWZ0RERER6hMUZERERkR5hcUZERESkR1icEREREekRFmdEREREeoTFGREREZEeYXFGREREpEdYnBERERHpERZnRERERHqExRkRERGRHmFxRkRERKRHWJwRERER6REWZ0RERER6pFIUZ9HR0bCzs1MOh4aGwtPT85XTBAYGok+fPsrhjh07Yty4ceUSHxEREZG6dFqcBQYGQpIk5cve3h4+Pj44c+aMRv188MEHuHDhQpli2bp1K8LCwsrUh6ZGjhwJSZKwaNGi1zpfIiIi0l86P3Lm4+OD1NRUpKam4sCBAzAxMUGvXr006sPCwgKOjo5liqNatWqwtrYuUx+a2LZtG44dO4aaNWu+tnkSERGR/tN5cWZubg4nJyc4OTnB09MTU6ZMwfXr13H37l0AwKFDhyBJEh49eqScJjExEZIk4erVqwCKntYsLC8vD+PHj4ednR3s7e0xadIkCCFUxil8WtPFxQVz585FUFAQrK2tUadOHaxYsUJlmiNHjsDT0xMymQytW7dGTEwMJElCYmLiK3O+efMmRo8ejfXr18PU1LTEZURERESGw0TXAbwoIyMD69atg6urK+zt7bXW74IFCxAdHY2oqCg0adIECxYswLZt29C5c+cSpwsLC8O0adOwefNmfPbZZ+jQoQPc3NyQnp4OPz8/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ERHpERZnRERERHqExRkRERGRHmFxRkRERKRHWJwRERER6REWZ0RERER6hMUZERERkR5hcUZERESkR1icEREREekRFmdEREREeoTFGREREZEeYXFGREREpEdYnBERERHpERZnFVTt2rUhSZJBvGxtbQEAtra2Oo+F+TJn5sucdZEvGRYWZ0RERER6hMUZERERkR5hcUZERESkR1icEREREekRFmdEREREeoTFGREREZEeYXFGREREpEdYnBERERHpERZnRERERHqExRkRERGRHmFxRkRERKRHWJwRERER6REWZ0RERER6hMUZERERkR5hcUZERESkR1icEREREekRFmdEREREeoTFGREREZEeYXFGREREpEdYnBERERHpERZnRERERHqExRkRERGRHqkUxVl0dDTs7OyUw6GhofD09HzlNIGBgejTp49yuGPHjhg3bly5xEdERESkLp0WZ4GBgZAkSfmyt7eHj48Pzpw5o1E/H3zwAS5cuFCmWLZu3YqwsLAy9aHufLp37w57e3tIkoTExMRynycRERFVHDo/cubj44PU1FSkpqbiwIEDMDExQa9evTTqw8LCAo6OjmWKo1q1arC2ti5TH+p48uQJ3n77bURGRpb7vIiIiKji0XlxZm5uDicnJzg5OcHT0xNTpkzB9evXcffuXQDAoUOHIEkSHj16pJwmMTERkiTh6tWrAIqe1iwsLy8P48ePh52dHezt7TFp0iQIIVTGKXxa08XFBXPnzkVQUBCsra1Rp04drFixQmWaI0eOwNPTEzKZDK1bt0ZMTEyJR8OGDh2KGTNmoGvXrmotHyIiIjIsJroO4EUZGRlYt24dXF1dYW9vr7V+FyxYgOjoaERFRaFJkyZYsGABtm3bhs6dO5c4XVhYGKZNm4bNmzfjs88+Q4cOHeDm5ob09HT4+fnB19cXGzZsQEpKSrlcs5adnY3s7GzlcHp6OoDnRwslSdL6/PSRhYWFys/KztDyBQwvZ0PLFzC8nLWdb25urlb6KU8FMVaEWLVFk5w1WS46L8527twJKysrAM9P+cnlcuzcuRNGRto7qLdo0SJMnToV/fr1AwAsX74csbGxJU7n6+uL4OBgAMDkyZOxcOFCHDx4EG5ubtiwYQMkScLKlSshk8ng7u6OmzdvYvjw4VqLGwAiIiIwa9asIu1LlixBlSpVtDovfRcVFaXr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",
+      "text/plain": [
+       "<Figure size 640x480 with 1 Axes>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "text/plain": [
+       "<Figure size 640x480 with 0 Axes>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "import matplotlib.pyplot as plt\n",
+    "plt.barh(range(len(top_5_stories)), top_5_stories, color='black')\n",
+    "plt.xlabel('Number of Existing Stories')\n",
+    "plt.ylabel('Top 5 Tallest buildigs')\n",
+    "plt.title('Top 5 Tallest buildings based on number of exisitng stories')\n",
+    "plt.yticks(range(len(top_5_stories)), ['Building {}'.format(i+1) for i in range(len(top_5_stories))])\n",
+    "# plt.grid(axis='x')\n",
+    "plt.grid()\n",
+    "plt.show()\n",
+    "plt.savefig('bar_plot.png',dpi=300)"
+   ]
+  }
+ ],
+ "metadata": {
+  "kaggle": {
+   "accelerator": "none",
+   "dataSources": [
+    {
+     "datasetId": 16432,
+     "sourceId": 21688,
+     "sourceType": "datasetVersion"
+    }
+   ],
+   "dockerImageVersionId": 30732,
+   "isGpuEnabled": false,
+   "isInternetEnabled": false,
+   "language": "python",
+   "sourceType": "notebook"
+  },
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.13"
+  },
+  "papermill": {
+   "default_parameters": {},
+   "duration": 9.616206,
+   "end_time": "2024-07-11T15:40:47.040422",
+   "environment_variables": {},
+   "exception": null,
+   "input_path": "__notebook__.ipynb",
+   "output_path": "__notebook__.ipynb",
+   "parameters": {},
+   "start_time": "2024-07-11T15:40:37.424216",
+   "version": "2.5.0"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
